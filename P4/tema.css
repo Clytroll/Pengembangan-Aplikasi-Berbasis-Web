@@ -1,0 +1,40 @@
+/* 1. Ikut pengaturan sistem: lapis semantik saja yang diganti */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:         var(--slate-900);
+    --color-fg:         var(--slate-200);
+    --color-surface:    var(--slate-800);
+    --color-border:     var(--slate-500);
+    --color-primary:    var(--color-primary-gelap);
+    --color-on-primary: var(--slate-900);
+    --color-danger:     var(--red-300);
+    --shadow-1:         var(--shadow-gelap);
+  }
+}
+
+/* 2. Pilihan manual HARUS berada setelah blok media query,
+      supaya menang saat keduanya menyala bersamaan. */
+:root:has(#tema:checked) {
+  --color-bg:         var(--slate-900);
+  --color-fg:         var(--slate-200);
+  --color-surface:    var(--slate-800);
+  --color-border:     var(--slate-500);
+  --color-primary:    var(--color-primary-gelap);
+  --color-on-primary: var(--slate-900);
+  --color-danger:     var(--red-300);
+  --shadow-1:         var(--shadow-gelap);
+}
+
+/* 3. Sistem gelap, tetapi pengguna memilih terang (membaca di ruang terang) */
+@media (prefers-color-scheme: dark) {
+  :root:has(#tema:checked) {
+    --color-bg:         var(--slate-50);
+    --color-fg:         var(--slate-900);
+    --color-surface:    var(--white);
+    --color-border:     var(--slate-500);
+    --color-primary:    var(--green-700);
+    --color-on-primary: var(--white);
+    --color-danger:     var(--red-700);
+    --shadow-1:         var(--shadow-terang);
+  }
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Olahraga Arif</title>
+
+  <!-- urutan ini yang benar: token -> dasar -> tata letak -> komponen -> tema -->
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="komponen.css">
+  <link rel="stylesheet" href="tema.css">
+</head>
+<body>
+  <header>
+    <input type="checkbox" id="tema" class="pengalih-tema">
+    <div class="header-baris">
+      <h1>Jadwal Olahraga Arif</h1>
+      <nav aria-label="Navigasi utama">
+        <ul>
+          <li><a href="#bagian-1">Jadwal Latihan</a></li>
+          <li><a href="#bagian-2">Catat Latihan</a></li>
+          <li><a href="#bagian-3">Target Saya</a></li>
+        </ul>
+      </nav>
+      <label for="tema" class="tombol-tema">Ganti tema</label>
+    </div>
+    <p>Jadwal latihan mingguan saya beserta durasi, target kalori, dan catatan latihan.</p>
+  </header>
+
+  <main>
+    <section id="bagian-1">
+      <h2>Jadwal Latihan</h2>
+
+      <div class="tabel-wadah">
+        <table>
+          <caption>Jadwal latihan mingguan dan target kalori yang terbakar</caption>
+          <thead>
+            <tr>
+              <th scope="col">Hari</th>
+              <th scope="col">Jenis Olahraga</th>
+              <th scope="col">Durasi</th>
+              <th scope="col">Target Kalori</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Senin</th>
+              <td>Lari pagi</td>
+              <td>30 menit</td>
+              <td>300 kkal</td>
+            </tr>
+            <tr>
+              <th scope="row">Rabu</th>
+              <td>Push-up, sit-up, dan plank</td>
+              <td>45 menit</td>
+              <td>250 kkal</td>
+            </tr>
+            <tr>
+              <th scope="row">Jumat</th>
+              <td>Bersepeda</td>
+              <td>60 menit</td>
+              <td>400 kkal</td>
+            </tr>
+            <tr>
+              <th scope="row">Minggu</th>
+              <td>Jalan santai</td>
+              <td>45 menit</td>
+              <td>200 kkal</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure>
+        <img src="olahraga.jpg"
+             alt="Seorang pria berkaus biru, celana pendek hitam, dan sepatu lari sedang berlari cepat dengan satu lutut terangkat tinggi, di latar belakang putih."
+             width="300" height="400" loading="lazy">
+        <figcaption>Lari, olahraga utama dalam jadwal saya: target minimal 30 menit, empat kali seminggu.</figcaption>
+      </figure>
+    </section>
+
+    <section id="bagian-2">
+      <h2>Catat Latihan</h2>
+
+      <form action="/simpan" method="post" class="form">
+        <div class="form-kolom">
+          <label for="jenis-olahraga">Jenis olahraga</label>
+          <input type="text" id="jenis-olahraga" name="jenis-olahraga" required minlength="3" maxlength="50">
+          <p class="pesan-galat">⚠ Isi 3–50 karakter, misalnya "Lari pagi".</p>
+        </div>
+        <div class="form-kolom">
+          <label for="tanggal-latihan">Tanggal latihan</label>
+          <input type="date" id="tanggal-latihan" name="tanggal-latihan" required min="2026-09-01" max="2027-01-31">
+          <p class="pesan-galat">⚠ Pilih tanggal antara 1 September 2026 dan 31 Januari 2027.</p>
+        </div>
+        <div class="form-kolom">
+          <label for="durasi">Durasi (menit)</label>
+          <input type="number" id="durasi" name="durasi" required min="5" max="240" step="5">
+          <p class="pesan-galat">⚠ Isi 5–240 menit, kelipatan 5.</p>
+        </div>
+        <button type="submit">Simpan</button>
+      </form>
+    </section>
+
+    <section id="bagian-3">
+      <h2>Target Saya</h2>
+      <ul class="katalog">
+        <li class="kartu">Berolahraga minimal 4 kali seminggu, masing-masing minimal 30 menit.</li>
+        <li class="kartu">Membakar sekitar 1.150 kkal per minggu dari latihan terjadwal.</li>
+        <li class="kartu">Bisa lari 5 km tanpa berhenti sebelum <time datetime="2026-12-31">akhir Desember 2026</time>.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Muhammad Arif Rahman Jalil · 23523132 · 2026</p>
+  </footer>
+</body>
+</html>
