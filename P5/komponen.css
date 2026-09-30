@@ -1,0 +1,198 @@
+/* Tabel */
+.tabel-wadah { overflow-x: auto; } /* tabel bergulir di wadahnya, halaman tidak */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+caption {
+  text-align: start;
+  font-size: var(--text-sm);
+  padding-block: var(--space-2);
+}
+
+th, td {
+  padding: var(--space-2);         /* padding tipis supaya 4 kolom muat di 360 px */
+  border-bottom: 1px solid var(--color-border);
+  text-align: start;
+}
+
+/* Gambar */
+figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure img { border-radius: var(--radius-md); }
+
+figcaption { font-size: var(--text-sm); }
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 30rem;
+}
+
+.form-kolom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);             /* jarak label ke isian, seragam */
+}
+
+label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+input, select, textarea {
+  font: inherit;                   /* kolom isian ikut ukuran huruf halaman */
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-fg);
+}
+
+button {
+  align-self: flex-start;
+  font: inherit;
+  font-weight: 600;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  cursor: pointer;
+}
+
+button:hover { text-decoration: underline; }
+
+/* :focus-visible hanya muncul saat pengguna memakai papan ketik */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Tandai hanya setelah pengguna mengisi sesuatu yang tidak sah */
+input:user-invalid {
+  border-color: var(--color-danger);
+  border-width: 2px;
+}
+
+/* Pesan galat: sembunyikan selama belum tidak-sah, tampilkan saat perlu */
+.pesan-galat { display: none; color: var(--color-danger); font-size: var(--text-sm); }
+.form-kolom:has(input:user-invalid) .pesan-galat { display: block; }
+
+/* Sidebar */
+.sisi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--card-pad);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.ringkasan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ringkasan div {
+  display: flex;
+  justify-content: space-between;  /* label kiri, angka kanan, satu baris */
+  gap: var(--space-2);
+}
+
+.ringkasan dd { font-weight: 600; }
+
+/* Menu samping: kolom. Sumbu utama vertikal, silang horizontal. */
+.menu-samping {
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Galeri: jumlah kolom mengikuti ruang, tanpa media query */
+.galeri {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+}
+
+/* Kartu: isi disusun flex, kaki selalu di dasar kartu */
+.kartu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  padding: var(--card-pad);
+}
+
+.galeri .kartu { min-height: 14rem; }   /* tinggi dasar seragam walau isi pendek */
+
+.kartu__isi {
+  flex: 1;                         /* isi menyerap sisa tinggi, kaki terdorong ke bawah */
+  min-width: 0;                    /* teks membungkus, tidak melebarkan kolom */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.kartu__judul { overflow-wrap: anywhere; }
+
+.kartu__tahap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-inline-start: var(--space-6);
+}
+
+.kartu__kaki {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  font-size: var(--text-sm);
+}
+
+.lencana {
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 600;
+}
+
+/* Blok yang menonjol: target utama menempati dua baris galeri */
+.papan { grid-row: span 2; }
+
+/* Tombol pengalih tema */
+.pengalih-tema { position: absolute; opacity: 0; pointer-events: none; }
+
+.tombol-tema {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+/* checkbox tersembunyi, jadi penanda fokusnya dipindah ke label */
+.pengalih-tema:focus-visible ~ .navbar .tombol-tema {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

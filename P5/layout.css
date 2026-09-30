@@ -1,0 +1,101 @@
+/* Kerangka halaman: tiga baris (kepala, isi, kaki) dijaga grid */
+.page {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100dvh;              /* dvh: ikut bilah alamat ponsel yang bergerak */
+  gap: var(--space-6);
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Navbar: satu baris, disusun flex. Sumbu utama horizontal, silang vertikal. */
+.navbar {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;             /* sumbu silang: rata tengah */
+  flex-wrap: wrap;                 /* hanya turun baris bila memang tidak muat (360 px) */
+}
+
+.navbar h1 {
+  flex: 1 1 12rem;                 /* judul menyerap sisa ruang, menu tetap di kanan */
+  min-width: 0;                    /* judul panjang membungkus, tidak mendorong menu */
+  overflow-wrap: anywhere;
+}
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  list-style: none;                /* daftar nav tanpa butir */
+  padding: 0;
+}
+
+nav a {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+nav a:hover { text-decoration: underline; }
+
+/* Isi: dua kolom, sidebar tetap 16rem, konten menyerap sisa lebar */
+.isi {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  grid-template-areas:
+    "sisi utama"
+    "sisi bawah";
+  gap: var(--space-6);
+  align-items: start;
+  align-content: start;            /* baris isi tidak meregang mengisi 1fr halaman */
+}
+
+.sisi  { grid-area: sisi; }
+.utama { grid-area: utama; }
+.bawah { grid-area: bawah; }
+
+/* Item grid boleh menyusut di bawah ukuran isinya */
+.sisi, .utama, .bawah { min-width: 0; }
+
+/* Layar sempit: 16rem + 1fr tidak muat di 360 px, jadi area ditumpuk satu kolom */
+@media (width < 48rem) {
+  .isi {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "sisi"
+      "utama"
+      "bawah";
+  }
+}
+
+.utama {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);         /* jarak antar bagian, tanpa margin */
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Jadwal: tabel dan gambar berdampingan bila muat, bertumpuk bila tidak */
+.jadwal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+footer {
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-fg);          /* hindari abu pucat yang gagal kontras */
+  font-size: var(--text-sm);
+}
