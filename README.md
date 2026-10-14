@@ -3,7 +3,14 @@
 Repo ini memuat pekerjaan mata kuliah Pengembangan Aplikasi
 Berbasis Web, satu folder untuk setiap pertemuan.
 
+## Pertemuan 2 — Analisis HTTP
+
+Berkas di folder `P2/`: starter `analisis_http.html`, soal `tugas.pdf`, dan jawaban `tugas_23523132.docx`. Topik: HTTP,
+URL, tautan mailto, kode status, serta GET vs POST.
+
 ## Pertemuan 3 — Halaman profil saya
+
+Berkas di folder `P3/`: profil.html dan olahraga.jpg.
 
 Topik halaman saya: jadwal dan target olahraga saya.
 
@@ -15,16 +22,14 @@ Topik halaman saya: jadwal dan target olahraga saya.
 - Kolom form: jenis olahraga, tanggal latihan, durasi
 - Gambar: olahraga.jpg
 
-## Catatan penggunaan AI
+### Deklarasi AI
 
-- Dibantu AI (Claude): draf kode `worksheet-p3/profil.html` dan draf jawaban lembar kerja.
-- Gambar `olahraga.jpg` saya siapkan sendiri.
-- Saya kerjakan sendiri: pemilihan topik, penyesuaian jadwal latihan, pemeriksaan ulang
-  halaman di peramban (tautan, label, Tab), dan jawaban tiket keluar.
+Dibantu AI (Claude): draf kode `profil.html`.
 
 ## Pertemuan 4 — Design token halaman profil
 
-- Berkas gaya: tokens.css, base.css, layout.css, komponen.css, tema.css
+- Berkas di folder `P4/`: profil.html, olahraga.jpg, dan berkas gaya tokens.css,
+  base.css, layout.css, komponen.css, tema.css
 - Warna utama: #15803D (hijau), dipilih karena sesuai tema olahraga dan
   kebugaran, serta lolos kontras 5.02:1 untuk teks putih di atas tombol.
 - Tema gelap tidak memakai hex baru untuk warna utama. Nilainya diturunkan
@@ -44,73 +49,108 @@ Topik halaman saya: jadwal dan target olahraga saya.
 Kriteria selesai saya: mengubah --green-700 di satu baris harus mengubah
 warna tombol, tautan, judul, dan garis fokus di kedua tema.
 
-
 ## Pertemuan 5 — Layout modern: flexbox dan grid
 
 Berkas di folder `P5/`: profil.html, tokens.css, base.css, layout.css,
 komponen.css, tema.css. Isi, warna, dan token dari Pertemuan 4 tetap; yang
 berubah hanya CSS pengatur posisi, plus sidebar "Minggu Ini" dan galeri target.
 
-### A.1 Sketsa kerangka
+### Deklarasi AI
 
-```
-┌──────────────────────────────────────────────┐
-│ header  (auto)  judul · menu · tombol tema    │  baris 1
-├──────────────┬───────────────────────────────┤
-│ sisi         │ utama: jadwal + catat latihan  │  baris 2 (1fr)
-│ (16rem)      ├───────────────────────────────┤
-│ Minggu Ini   │ bawah: galeri Target Saya      │
-├──────────────┴───────────────────────────────┤
-│ footer  (auto)                                │  baris 3
-└──────────────────────────────────────────────┘
-```
+Dibantu AI (Claude): draf kode `P5/`.
 
-| Bagian halaman | Nilai yang saya pakai |
-|---|---|
-| Baris halaman | `grid-template-rows: auto 1fr auto; min-height: 100dvh` |
-| Kolom isi | `grid-template-columns: 16rem 1fr` |
-| Area isi | `"sisi utama" "sisi bawah"` |
-| Di bawah 48rem | satu kolom: `"sisi" "utama" "bawah"` |
+## Pertemuan 6 — Responsif mobile-first
 
-### A.3 Kapan flex, kapan grid
+Berkas di folder `P6/`: profil.html, tokens.css, base.css, layout.css,
+komponen.css, tema.css (dari P5) ditambah **responsif.css**. Tangkapan layar
+ada di `P6/tangkapan/` (360 px, 768 px, 1 280 px; tema terang dan gelap).
 
-| Bagian | Pilihan | Alasan |
+Perubahan dari P5: aturan kolom `.isi` dan `.galeri` dipindah ke responsif.css.
+Di P5, `.isi` ditulis dua kolom lalu ditimpa `@media (width < 48rem)` (gaya
+desktop-first/max-width). Sekarang dasarnya satu kolom, lalu ditambah dengan
+`min-width`. Galeri yang dulu `auto-fit` kini 1 → 2 → 3 kolom lewat titik henti.
+
+## Pertemuan 8 — JavaScript modern ES6+ dan array methods
+
+Berkas di folder `P8/`: profil.html dan seluruh CSS dari P6, ditambah
+**js/app.js** yang dimuat lewat `<script type="module" src="js/app.js">`
+tepat sebelum `</body>`. Halaman harus dibuka lewat server lokal (Live Server
+atau `python -m http.server`), bukan klik dua kali.
+
+Perubahan dari P6: isi halaman tidak lagi ditulis di HTML. profil.html hanya
+menyisakan wadah kosong ber-id; isinya dipasang dari data di app.js.
+
+| Data | Variabel | Bentuk |
 |---|---|---|
-| Kepala halaman | flex | isinya satu deret (judul, menu, tombol), cukup satu sumbu |
-| Isi dua kolom | grid | butuh baris dan kolom sekaligus, sidebar merentang dua baris |
-| Galeri kartu | grid | kolom harus sama lebar dan jumlahnya menyesuaikan sendiri |
-| Isi satu kartu | flex | isi disusun satu arah (kolom), kaki didorong ke dasar kartu |
+| Identitas (nama, peran, deskripsi, NIM) | `profil` | object |
+| Daftar keahlian | `profil.keahlian` | array teks |
+| Jadwal latihan | `daftarLatihan` | array of object |
+| Target olahraga (pengganti "proyek") | `daftarTarget` | array of object |
+| Jumlah target | `jumlahTarget` | angka |
 
-### D.3 Penempatan
+- Fungsi murni: `buatPerkenalan`, `formatKeahlian`, `hitungTotal`,
+  `formatAngka`, `formatTanggal`, `buatBarisLatihan`, `buatKartuTarget`.
+- Array methods: `map` (baris tabel dan kartu target), `filter` (target
+  berstatus "Berjalan"), `find` (target "Plank 2 menit"), `reduce` (total
+  durasi dan kalori di sidebar), `[...daftarLatihan].sort()` (salinan, data
+  asli tetap).
+- Ringkasan sidebar (4 hari, 180 menit, 1.150 kkal) kini dihitung dari
+  `daftarLatihan`, bukan diketik.
 
-| Blok | Cara | Potongan kode |
-|---|---|---|
-| Sidebar, konten utama, galeri | area bernama | `grid-template-areas: "sisi utama" "sisi bawah";` |
-| Kartu "Lari 5 km" (target utama) | span | `.papan { grid-row: span 2; }` |
+## Pertemuan 9 — DOM, event, dan interaktivitas
 
-Kartu utama memakai `grid-row: span 2`, bukan `grid-column: span 2`: di 360 px
-galeri hanya satu kolom, dan span kolom akan memaksa kolom kedua lalu meluber.
+Berkas di folder `P9/`: salinan halaman Pertemuan 8, ditambah `js/dom.js`.
+`app.js` tetap menyimpan data dan fungsi murni. Perubahannya hanya: setiap
+target diberi `kategori`, `daftarProyek` (alias `daftarTarget`) dan
+`formatTanggal` diberi `export`, dan baris yang mengisi galeri dengan
+`innerHTML` dihapus karena kartu kini dipasang `dom.js`. Halaman tetap dibuka
+lewat server lokal.
 
-### F. Pemeriksaan
+- Daftar target dipasang ke `#daftar` dengan `createElement`, `textContent`,
+  dan `append` (lewat `DocumentFragment`). Wadah dikosongkan di baris pertama
+  `render`.
+- Filter kategori (Semua, Kardio, Kekuatan, Kebiasaan, Fleksibilitas) memakai
+  satu pendengar di `#filter`. Klik dibaca lewat `event.target.closest("button")`
+  dan `dataset.kategori`. Tombol aktif ditandai kelas `.aktif`.
+- Kategori Fleksibilitas tidak punya data, jadi `#pesan-kosong` muncul.
+- Form Catat Latihan memanggil `preventDefault`. Pesan galat per kolom
+  mengikuti `aria-invalid`. Setelah form dikirim atau kolom diubah, tombol
+  Simpan nonaktif sampai jenis (3–50 karakter), tanggal (1 Sep 2026–31 Jan
+  2027), dan durasi (5–240 menit, kelipatan 5) semuanya layak. Spasi di tepi
+  tidak dihitung.
 
-Diuji di Chrome pada 360 px dan 1 280 px dengan skrip yang membandingkan tepi
-kanan setiap elemen dengan induk dan viewport.
+### Deklarasi AI
 
-| Periksa | Hasil |
-|---|---|
-| Kerangka halaman | 3 baris grid, kaki tetap di dasar |
-| Jarak memakai gap | tidak ada `margin` di layout.css dan komponen.css, tidak ada `float` |
-| Lebar memakai fr/rem | `16rem 1fr`, `minmax(min(16rem, 100%), 1fr)` |
-| Galeri adaptif | 1 kolom di 360 px, 3 kolom di 1 280 px, tanpa media query |
-| Tidak meluber | 0 elemen meluber di 360 px dan 1 280 px |
-| Tema gelap | tombol pengalih tetap bekerja (selektor diganti ke `.navbar`) |
+Dibantu AI (Claude Code): penyusunan `js/dom.js` (render, filter, validasi
+form), penyesuaian `app.js`, `profil.html`, dan `komponen.css` untuk P9, serta
+bagian README ini.
 
-- **F.2** `grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));`, dipakai pada galeri target.
-- **F.4 Flex:** navbar, sidebar, dan isi kartu, karena isinya berderet satu arah dan cukup diatur `gap` serta `align-items`.
-- **F.4 Grid:** kerangka halaman, area isi, dan galeri, karena perlu mengatur baris dan kolom sekaligus.
-- **F.4 Kasus meluber:** di 360 px kolom `16rem 1fr` menyisakan ±50 px untuk konten sehingga tabel dan form meluber; diperbaiki dengan menumpuk area jadi satu kolom di bawah 48rem. Tabel juga lebih lebar 13 px dari wadahnya; padding sel dikecilkan jadi `var(--space-2)`.
+## Pertemuan 10 — JavaScript asinkron: fetch, Promise, dan JSON
 
-### Catatan penggunaan AI (P5)
+Berkas di folder `P10/`: salinan halaman Pertemuan 9, ditambah satu berkas
+baru `js/api.js`. `app.js` tidak diubah. Halaman tetap dibuka lewat server
+lokal.
 
-- Dibantu AI (Claude): draf kode `P5/` dan draf jawaban lembar kerja.
-- Saya kerjakan sendiri: pemeriksaan ulang di peramban, penilaian mandiri (F.3), dan catatan untuk pengampu (F.5).
+- API: **wger.de** (`https://wger.de/api/v2/exerciseinfo/?language=2&category=10&limit=6`),
+  API publik tanpa kunci akses yang mengizinkan CORS. Datanya enam latihan
+  perut, ditampilkan di bagian baru "Referensi Latihan Perut" (`#bagian-4`)
+  sebagai pendukung target "Plank 2 menit". Tidak memakai `notisia.json` lokal.
+- `js/api.js` (lapisan data): alamat ditulis sekali di konstanta `ALAMAT`.
+  Fungsi `ambilLatihan()` memanggil `fetch`, memeriksa `respons.ok` sebelum
+  `json()`, lalu memetakan `data.results` menjadi objek kecil
+  `{ id, nama, kategori, alat, otot }`. Galat dicatat lalu dilempar ulang.
+  `simpanCatatan()` dan `bacaCatatan()` menyimpan catatan dari form ke
+  localStorage dengan `JSON.stringify` dan membacanya dengan `JSON.parse`.
+- `js/dom.js` (lapisan tampilan): mengimpor `ambilLatihan` dan
+  `simpanCatatan`. `tampilkanLatihan()` memasang try/catch kedua dan
+  menampilkan empat keadaan di `#status-latihan`: memuat, berhasil (kartu di
+  `#daftar-latihan`), gagal (pesan galat di halaman), dan kosong. Isi dari
+  jaringan dipasang dengan `textContent`. `gambar([])` bisa dipanggil dari
+  Console untuk menguji keadaan kosong.
+- Kata `fetch` hanya ada di `js/api.js`.
+
+### Deklarasi AI
+
+Dibantu AI (Claude Code): penyusunan `js/api.js`, penambahan bagian
+pengambilan data dan penyimpanan catatan di `js/dom.js`, penyesuaian
+`profil.html` dan `komponen.css` untuk P10, serta bagian README ini.
