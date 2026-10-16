@@ -1,0 +1,33 @@
+/* Mobile-first: gaya dasar di atas (tanpa syarat), tambahan min-width di bawah.
+   Gambar (max-width: 100%) ada di base.css, wadah tabel bergulir ada di komponen.css. */
+
+/* dasar: berlaku di semua lebar, satu kolom */
+.isi {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "sisi"
+    "utama"
+    "bawah";
+  gap: var(--space-6);
+}
+
+.galeri {
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+/* tablet: galeri dua kolom */
+@media (min-width: 48rem) {
+  .galeri { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* desktop: sidebar bersanding dengan konten, galeri tiga kolom */
+@media (min-width: 60rem) {
+  .isi {
+    grid-template-columns: 16rem 1fr;
+    grid-template-areas:
+      "sisi utama"
+      "sisi bawah";
+  }
+  .galeri { grid-template-columns: repeat(3, 1fr); }
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil</title> <!-- diisi app.js dari profil.panggilan -->
+  <link rel="icon" href="data:,"> <!-- tanpa ini Console menampilkan 404 favicon.ico -->
+
+  <!-- urutan: token -> dasar -> tata letak -> komponen -> responsif -> tema -->
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="komponen.css">
+  <link rel="stylesheet" href="responsif.css">
+  <link rel="stylesheet" href="tema.css">
+</head>
+<body class="page">
+  <!-- baris 1 kerangka: kepala halaman -->
+  <header>
+    <input type="checkbox" id="tema" class="pengalih-tema">
+    <div class="navbar">
+      <h1 id="judul-halaman"></h1>
+      <nav aria-label="Navigasi utama">
+        <ul>
+          <li><a href="#bagian-1">Jadwal Latihan</a></li>
+          <li><a href="#bagian-2">Catat Latihan</a></li>
+          <li><a href="#bagian-3">Target Saya</a></li>
+          <li><a href="#bagian-4">Referensi Latihan</a></li>
+        </ul>
+      </nav>
+      <label for="tema" class="tombol-tema">Ganti tema</label>
+    </div>
+    <p id="deskripsi"></p>
+    <p id="perkenalan"></p>
+    <p id="keahlian"></p>
+  </header>
+
+  <!-- baris 2 kerangka: isi, dua kolom (sisi | utama, sisi | bawah) -->
+  <main class="isi">
+    <aside class="sisi" aria-labelledby="judul-sisi">
+      <h2 id="judul-sisi">Minggu Ini</h2>
+
+      <dl class="ringkasan">
+        <div>
+          <dt>Hari latihan</dt>
+          <dd id="ringkasan-hari"></dd>
+        </div>
+        <div>
+          <dt>Total durasi</dt>
+          <dd id="ringkasan-durasi"></dd>
+        </div>
+        <div>
+          <dt>Target kalori</dt>
+          <dd id="ringkasan-kalori"></dd>
+        </div>
+      </dl>
+
+      <nav aria-label="Pintasan">
+        <ul class="menu-samping">
+          <li><a href="#bagian-1">Lihat jadwal</a></li>
+          <li><a href="#bagian-2">Catat latihan baru</a></li>
+          <li><a href="#bagian-3">Cek target</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="utama">
+      <section id="bagian-1">
+        <h2>Jadwal Latihan</h2>
+
+        <div class="jadwal">
+          <div class="tabel-wadah">
+            <table>
+              <caption>Jadwal latihan mingguan dan target kalori yang terbakar</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Hari</th>
+                  <th scope="col">Jenis Olahraga</th>
+                  <th scope="col">Durasi</th>
+                  <th scope="col">Target Kalori</th>
+                </tr>
+              </thead>
+              <tbody id="isi-jadwal"></tbody> <!-- baris diisi app.js dari daftarLatihan -->
+            </table>
+          </div>
+
+          <figure>
+            <img src="olahraga.jpg"
+                 alt="Seorang pria berkaus biru, celana pendek hitam, dan sepatu lari sedang berlari cepat dengan satu lutut terangkat tinggi, di latar belakang putih."
+                 width="300" height="400" loading="lazy">
+            <figcaption>Lari, olahraga utama dalam jadwal saya: target minimal 30 menit, empat kali seminggu.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="bagian-2">
+        <h2>Catat Latihan</h2>
+
+        <form action="/simpan" method="post" class="form" id="form-latihan" novalidate> <!-- validasi diambil alih dom.js -->
+          <div class="form-kolom">
+            <label for="jenis-olahraga">Jenis olahraga</label>
+            <input type="text" id="jenis-olahraga" name="jenis-olahraga" required minlength="3" maxlength="50" aria-describedby="galat-jenis">
+            <p class="pesan-galat" id="galat-jenis" hidden>⚠ Isi 3–50 karakter, misalnya "Lari pagi".</p>
+          </div>
+          <div class="form-kolom">
+            <label for="tanggal-latihan">Tanggal latihan</label>
+            <input type="date" id="tanggal-latihan" name="tanggal-latihan" required min="2026-09-01" max="2027-01-31" aria-describedby="galat-tanggal">
+            <p class="pesan-galat" id="galat-tanggal" hidden>⚠ Pilih tanggal antara 1 September 2026 dan 31 Januari 2027.</p>
+          </div>
+          <div class="form-kolom">
+            <label for="durasi">Durasi (menit)</label>
+            <input type="number" id="durasi" name="durasi" required min="5" max="240" step="5" aria-describedby="galat-durasi">
+            <p class="pesan-galat" id="galat-durasi" hidden>⚠ Isi 5–240 menit, kelipatan 5.</p>
+          </div>
+          <button type="submit" id="tombol-simpan">Simpan</button>
+          <p id="status-form" class="status-form" role="status"></p>
+        </form>
+      </section>
+
+      <!-- P10: daftar diisi dom.js dari data yang diambil api.js (wger.de) -->
+      <section id="bagian-4">
+        <h2>Referensi Latihan Perut</h2>
+        <p>Latihan perut dari basis data terbuka wger.de, pendukung target "Plank 2 menit".</p>
+        <p id="status-latihan" class="status-latihan" role="status" hidden></p>
+        <ul class="galeri" id="daftar-latihan"></ul>
+      </section>
+    </div>
+
+    <section id="bagian-3" class="bawah">
+      <h2>Target Saya</h2>
+
+      <!-- P9: satu pendengar di #filter melayani semua tombol (dom.js) -->
+      <div id="filter" class="filter" role="group" aria-label="Saring target menurut kategori">
+        <button type="button" data-kategori="semua" class="aktif" aria-pressed="true">Semua</button>
+        <button type="button" data-kategori="kardio" aria-pressed="false">Kardio</button>
+        <button type="button" data-kategori="kekuatan" aria-pressed="false">Kekuatan</button>
+        <button type="button" data-kategori="kebiasaan" aria-pressed="false">Kebiasaan</button>
+        <button type="button" data-kategori="fleksibilitas" aria-pressed="false">Fleksibilitas</button>
+      </div>
+
+      <!-- galeri: 1 kolom (dasar), 2 kolom mulai 48rem, 3 kolom mulai 60rem -->
+      <ul class="galeri" id="daftar"></ul> <!-- kosong; kartu dipasang render() di dom.js -->
+      <p id="pesan-kosong" class="pesan-kosong" hidden>Tidak ada target pada kategori itu.</p>
+    </section>
+  </main>
+
+  <!-- baris 3 kerangka: kaki halaman -->
+  <footer>
+    <p id="kaki"></p>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/dom.js"></script> <!-- dom.js mengimpor api.js sendiri -->
+</body>
+</html>
