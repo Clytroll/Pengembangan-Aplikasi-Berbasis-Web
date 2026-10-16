@@ -1,15 +1,13 @@
 // =============================================================
-// P9/P10 — DOM dan event halaman Jadwal Olahraga Arif
-// app.js menyimpan data dan fungsi murni, api.js mengambil data dari jaringan;
-// berkas ini yang menyentuh halaman.
+// P11 — dom.js: seluruh sentuhan ke halaman (pemilih, render, kelas)
+// Tidak memasang pendengar peristiwa; itu tugas events.js.
 // =============================================================
 
-import { daftarProyek, formatTanggal } from "./app.js";
-import { ambilLatihan, simpanCatatan } from "./api.js";
+import { buatPerkenalan, formatKeahlian, hitungTotal, formatAngka, formatTanggal } from "./data.js";
 
-// ---------- Lembar A: pilih dulu elemennya ----------
+// ---------- Pemilih ----------
 
-// querySelector yang langsung melapor bila hasilnya null (lembar E, kasus 1)
+// querySelector yang langsung melapor bila hasilnya null
 function ambil(selektor) {
   const elemen = document.querySelector(selektor);
   if (elemen === null) console.error(`Pemilih ${selektor} menghasilkan null — cek profil.html`);
@@ -18,18 +16,21 @@ function ambil(selektor) {
 
 const wadah = ambil("#daftar");
 const kosong = ambil("#pesan-kosong");
-const barisFilter = ambil("#filter");
 
-const form = ambil("#form-latihan");
-const inputJenis = ambil("#jenis-olahraga");
-const inputTanggal = ambil("#tanggal-latihan");
-const inputDurasi = ambil("#durasi");
+export const barisFilter = ambil("#filter");
+export const form = ambil("#form-latihan");
+export const inputJenis = ambil("#jenis-olahraga");
+export const inputTanggal = ambil("#tanggal-latihan");
+export const inputDurasi = ambil("#durasi");
 const tombolSimpan = ambil("#tombol-simpan");
 const statusForm = ambil("#status-form");
 
-// ---------- Lembar B: satu isi array, satu kartu ----------
+const wadahLatihan = ambil("#daftar-latihan");
+const statusLatihan = ambil("#status-latihan");
 
-// elemen kecil: tag, kelas, teks — semua lewat textContent, bukan innerHTML
+// ---------- Elemen kecil dan kartu ----------
+
+// tag, kelas, teks — semua lewat textContent, bukan innerHTML
 function buatElemen(tag, kelas, teks) {
   const el = document.createElement(tag);
   if (kelas) el.className = kelas;
@@ -59,14 +60,39 @@ function buatKartu(proyek) {
   return li;
 }
 
-// ---------- Lembar D.1: satu fungsi render untuk daftar target ----------
+function buatBarisLatihan({ hari, jenis, durasi, kalori }) {
+  const tr = document.createElement("tr");
+  const th = buatElemen("th", "", hari);
+  th.scope = "row";
+  tr.append(th, buatElemen("td", "", jenis), buatElemen("td", "", `${durasi} menit`), buatElemen("td", "", `${formatAngka(kalori)} kkal`));
+  return tr;
+}
 
-function render(daftar) {
+// ---------- Bagian yang tidak pernah berubah: digambar sekali ----------
+
+export function gambarProfil(profil, daftarLatihan) {
+  const judulHalaman = `Jadwal Olahraga ${profil.panggilan}`;
+  document.title = judulHalaman;
+  ambil("#judul-halaman").textContent = judulHalaman;
+  ambil("#deskripsi").textContent = profil.deskripsi;
+  ambil("#perkenalan").textContent = buatPerkenalan(profil);
+  ambil("#keahlian").textContent = `Keahlian: ${formatKeahlian(profil.keahlian)}`;
+
+  ambil("#ringkasan-hari").textContent = `${daftarLatihan.length} hari`;
+  ambil("#ringkasan-durasi").textContent = `${hitungTotal(daftarLatihan, "durasi")} menit`;
+  ambil("#ringkasan-kalori").textContent = `${formatAngka(hitungTotal(daftarLatihan, "kalori"))} kkal`;
+
+  ambil("#isi-jadwal").replaceChildren(...daftarLatihan.map(buatBarisLatihan));
+  ambil("#kaki").textContent = `${profil.nama} · ${profil.nim} · ${profil.tahun}`;
+}
+
+// ---------- Daftar target ----------
+
+export function render(daftar) {
   wadah.textContent = ""; // 1. kosongkan lebih dulu
 
   if (daftar.length === 0) { // 2. periksa keadaan kosong
     kosong.hidden = false;
-    console.log("render: 0 kartu, pesan kosong ditampilkan");
     return;
   }
   kosong.hidden = true;
@@ -74,128 +100,46 @@ function render(daftar) {
   const fragmen = document.createDocumentFragment(); // halaman digambar sekali
   daftar.forEach((proyek) => fragmen.append(buatKartu(proyek))); // 3. isi ulang
   wadah.append(fragmen);
-  console.log(`render: ${daftar.length} kartu`); // satu baris per klik; dua baris = pendengar ganda
 }
 
-// ---------- Lembar C: satu pendengar di induk untuk semua tombol filter ----------
-
-function tandaiTombolAktif(tombolAktif) {
-  document.querySelectorAll("#filter button").forEach((tombol) => {
+export function tandaiTombolAktif(tombolAktif) {
+  barisFilter.querySelectorAll("button").forEach((tombol) => {
     tombol.classList.toggle("aktif", tombol === tombolAktif);
     tombol.setAttribute("aria-pressed", String(tombol === tombolAktif));
   });
 }
 
-// dipasang sekali, di luar render (lembar E, kasus 2)
-barisFilter.addEventListener("click", (event) => {
-  const tombol = event.target.closest("button");
-  if (!tombol) return; // klik di sela tombol, abaikan
+// ---------- Form: tanda galat per kolom ----------
 
-  const kategori = tombol.dataset.kategori;
-  const terpilih = daftarProyek.filter(
-    (proyek) => kategori === "semua" || proyek.kategori === kategori
-  );
-
-  tandaiTombolAktif(tombol);
-  render(terpilih);
-});
-
-render(daftarProyek); // tampilan awal: semua target, tombol "Semua" sudah .aktif di HTML
-
-// ---------- Lembar D.2: validasi form per kolom ----------
-
-const aturanKolom = [
-  {
-    kolom: inputJenis,
-    sah: (nilai) => nilai.length >= 3 && nilai.length <= 50,
-  },
-  {
-    kolom: inputTanggal,
-    // format tanggal ISO (YYYY-MM-DD) bisa dibandingkan sebagai teks
-    sah: (nilai) => nilai !== "" && nilai >= inputTanggal.min && nilai <= inputTanggal.max,
-  },
-  {
-    kolom: inputDurasi,
-    sah: (nilai) => {
-      const menit = Number(nilai);
-      return nilai !== "" && Number.isInteger(menit) && menit >= 5 && menit <= 240 && menit % 5 === 0;
-    },
-  },
-];
-
-let sudahDikirim = false;      // setelah submit pertama, semua kolom diperiksa
-const kolomDisentuh = new Set(); // kolom yang sudah pernah diubah pengguna
-
-// periksa satu kolom; pesan galat hanya ditampilkan bila kolom itu sudah "boleh dinilai"
-function periksaKolom({ kolom, sah }) {
-  const layak = sah(kolom.value.trim()); // spasi di tepi tidak dihitung
-  const tampilkan = sudahDikirim || kolomDisentuh.has(kolom);
+export function tandaiKolom(kolom, tampilkanGalat) {
   const galat = document.getElementById(kolom.getAttribute("aria-describedby"));
-
-  if (tampilkan && !layak) {
-    kolom.setAttribute("aria-invalid", "true");
-    galat.hidden = false;
-  } else {
-    kolom.removeAttribute("aria-invalid");
-    galat.hidden = true;
-  }
-  return layak;
+  if (tampilkanGalat) kolom.setAttribute("aria-invalid", "true");
+  else kolom.removeAttribute("aria-invalid");
+  galat.hidden = !tampilkanGalat;
 }
 
-function periksaForm() {
-  const hasil = aturanKolom.map(periksaKolom); // map, bukan every: semua kolom tetap diperbarui
-  const sah = hasil.every(Boolean);
-  if (sudahDikirim || kolomDisentuh.size > 0) tombolSimpan.disabled = !sah;
-  return sah;
+export function aturTombolSimpan(nonaktif) {
+  tombolSimpan.disabled = nonaktif;
 }
 
-// satu pendengar di form untuk ketiga kolom
-form.addEventListener("input", (event) => {
-  statusForm.textContent = "";
-  // kolom yang sedang bergalat diperiksa tiap ketikan, supaya pesannya hilang begitu layak
-  if (event.target.getAttribute("aria-invalid") === "true") kolomDisentuh.add(event.target);
-  periksaForm();
-});
+export function tulisStatusForm(teks) {
+  statusForm.textContent = teks;
+}
 
-form.addEventListener("change", (event) => {
-  kolomDisentuh.add(event.target); // selesai mengisi satu kolom: mulai dinilai
-  periksaForm();
-});
+export function fokusKolomGalat() {
+  form.querySelector('[aria-invalid="true"]')?.focus(); // pindah ke kolom pertama yang perlu diperbaiki
+}
 
-form.addEventListener("submit", (event) => {
-  event.preventDefault(); // halaman tidak dimuat ulang
-  sudahDikirim = true;
-
-  if (!periksaForm()) {
-    form.querySelector('[aria-invalid="true"]')?.focus(); // pindah ke kolom pertama yang perlu diperbaiki
-    return;
-  }
-
-  const catatan = { jenis: inputJenis.value.trim(), tanggal: inputTanggal.value, durasi: Number(inputDurasi.value) };
-  const jumlah = simpanCatatan(catatan); // P10: disimpan lewat JSON.stringify di api.js
-  statusForm.textContent = `Tersimpan: ${catatan.jenis}, ${formatTanggal(catatan.tanggal)}, ${catatan.durasi} menit (${jumlah} catatan di peramban ini).`;
-
-  form.reset();
-  sudahDikirim = false;
-  kolomDisentuh.clear();
-  periksaForm();
-  tombolSimpan.disabled = false;
-});
-
-// ---------- P10 Lembar D: data dari jaringan tampil di halaman ----------
-
-const wadahLatihan = ambil("#daftar-latihan");
-const statusLatihan = ambil("#status-latihan");
+// ---------- Referensi latihan dari jaringan (P10) ----------
 
 // keadaan memuat/gagal/kosong ditulis di satu paragraf; data-keadaan dipakai CSS
-function tampilkanStatus(keadaan, teks) {
+export function tampilkanStatus(keadaan, teks) {
   statusLatihan.dataset.keadaan = keadaan;
   statusLatihan.textContent = teks;
   statusLatihan.hidden = false;
 }
 
-// penggambar: hanya menyusun elemen, tidak tahu dari mana datanya
-function gambarLatihan(daftar) {
+export function gambarLatihan(daftar) {
   wadahLatihan.textContent = ""; // kartu tidak berlipat saat dimuat ulang
 
   if (daftar.length === 0) {
@@ -221,18 +165,3 @@ function gambarLatihan(daftar) {
   });
   wadahLatihan.append(fragmen);
 }
-
-// pemanggil api.js: try/catch kedua ada di sini
-async function tampilkanLatihan() {
-  wadahLatihan.textContent = "";
-  tampilkanStatus("memuat", "Memuat referensi latihan…");
-  try {
-    const daftar = await ambilLatihan();
-    gambarLatihan(daftar);
-  } catch (galat) {
-    tampilkanStatus("gagal", `Gagal memuat data: ${galat.message}. Periksa koneksi, lalu muat ulang halaman.`);
-  }
-}
-
-window.gambar = gambarLatihan; // lembar F.1: uji keadaan kosong dengan gambar([]) dari Console
-tampilkanLatihan();

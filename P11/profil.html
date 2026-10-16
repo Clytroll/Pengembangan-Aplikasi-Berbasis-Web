@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profil</title> <!-- diisi app.js dari profil.panggilan -->
+  <title>Profil</title> <!-- diisi dom.js dari profil.panggilan -->
   <link rel="icon" href="data:,"> <!-- tanpa ini Console menampilkan 404 favicon.ico -->
 
   <!-- urutan: token -> dasar -> tata letak -> komponen -> responsif -> tema -->
@@ -80,7 +80,7 @@
                   <th scope="col">Target Kalori</th>
                 </tr>
               </thead>
-              <tbody id="isi-jadwal"></tbody> <!-- baris diisi app.js dari daftarLatihan -->
+              <tbody id="isi-jadwal"></tbody> <!-- baris diisi dom.js dari daftarLatihan -->
             </table>
           </div>
 
@@ -149,7 +149,7 @@
     <p id="kaki"></p>
   </footer>
 
+  <!-- P11: satu pemanggil; data.js, state.js, dom.js, events.js, api.js dipanggil lewat import -->
   <script type="module" src="js/app.js"></script>
-  <script type="module" src="js/dom.js"></script> <!-- dom.js mengimpor api.js sendiri -->
 </body>
 </html>
