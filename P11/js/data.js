@@ -22,6 +22,9 @@ export const daftarLatihan = [
   { hari: "Minggu", jenis: "Jalan santai", durasi: 45, kalori: 200 },
 ];
 
+// nilai data-kategori tombol filter di profil.html; dipakai untuk memeriksa isi simpanan
+export const KATEGORI = ["semua", "kardio", "kekuatan", "kebiasaan", "fleksibilitas"];
+
 // "proyek" di halaman ini adalah target olahraga
 // kategori harus sama huruf per huruf dengan data-kategori tombol filter di profil.html
 export const daftarProyek = [

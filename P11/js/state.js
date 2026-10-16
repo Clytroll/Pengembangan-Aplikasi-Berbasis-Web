@@ -4,7 +4,7 @@
 // pengubah di sini mengubah state, lalu memanggil render(state).
 // =============================================================
 
-import { daftarProyek, formatTanggal, formSah } from "./data.js";
+import { KATEGORI, daftarProyek, formatTanggal, formSah } from "./data.js";
 import { simpanCatatan } from "./api.js";
 import { render } from "./dom.js";
 import { simpan, muat, aturUlang } from "./simpanan.js";
@@ -14,11 +14,15 @@ const BAWAAN = { kategoriAktif: "semua", temaDibalik: false };
 
 const formKosong = () => ({ jenis: "", tanggal: "", durasi: "" });
 
-const tersimpan = muat(); // null pada kunjungan pertama: diganti nilai bawaan lewat ??
+const tersimpan = muat(); // null pada kunjungan pertama atau bila simpanan dibuang
+
+// versi cocok belum tentu isinya benar: nilai yang tidak dikenal diganti nilai bawaan
+const kategoriTersimpan = KATEGORI.includes(tersimpan?.kategoriAktif) ? tersimpan.kategoriAktif : null;
+const temaTersimpan = typeof tersimpan?.temaDibalik === "boolean" ? tersimpan.temaDibalik : null;
 
 export const state = {
-  kategoriAktif: tersimpan?.kategoriAktif ?? BAWAAN.kategoriAktif,
-  temaDibalik: tersimpan?.temaDibalik ?? BAWAAN.temaDibalik, // true = kebalikan tema sistem (#tema dicentang)
+  kategoriAktif: kategoriTersimpan ?? BAWAAN.kategoriAktif,
+  temaDibalik: temaTersimpan ?? BAWAAN.temaDibalik, // true = kebalikan tema sistem (#tema dicentang)
   daftarProyek,
   form: {
     nilai: formKosong(),  // isi ketiga kolom, diperbarui tiap ketikan
