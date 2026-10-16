@@ -76,3 +76,20 @@ export const formatAngka = (angka) => angka.toLocaleString("id-ID");
 
 export const formatTanggal = (iso) =>
   new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
+// ---------- Aturan form Catat Latihan (murni: nilai masuk, benar/salah keluar) ----------
+
+const TANGGAL_MIN = "2026-09-01"; // sama dengan atribut min/max di profil.html
+const TANGGAL_MAKS = "2027-01-31";
+
+// spasi di tepi tidak dihitung; tanggal ISO (YYYY-MM-DD) bisa dibandingkan sebagai teks
+export const aturanForm = {
+  jenis: (nilai) => nilai.trim().length >= 3 && nilai.trim().length <= 50,
+  tanggal: (nilai) => nilai !== "" && nilai >= TANGGAL_MIN && nilai <= TANGGAL_MAKS,
+  durasi: (nilai) => {
+    const menit = Number(nilai);
+    return nilai.trim() !== "" && Number.isInteger(menit) && menit >= 5 && menit <= 240 && menit % 5 === 0;
+  },
+};
+
+export const formSah = (nilai) => Object.keys(aturanForm).every((kunci) => aturanForm[kunci](nilai[kunci]));

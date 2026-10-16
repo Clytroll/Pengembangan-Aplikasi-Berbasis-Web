@@ -1,9 +1,10 @@
 // =============================================================
 // P11 — dom.js: seluruh sentuhan ke halaman (pemilih, render, kelas)
-// Tidak memasang pendengar peristiwa; itu tugas events.js.
+// Tidak memasang pendengar dan tidak menyimpan keadaan: semua yang
+// tampil dibaca dari objek state yang diterima render(state).
 // =============================================================
 
-import { buatPerkenalan, formatKeahlian, hitungTotal, formatAngka, formatTanggal } from "./data.js";
+import { buatPerkenalan, formatKeahlian, hitungTotal, formatAngka, formatTanggal, aturanForm } from "./data.js";
 
 // ---------- Pemilih ----------
 
@@ -19,9 +20,11 @@ const kosong = ambil("#pesan-kosong");
 
 export const barisFilter = ambil("#filter");
 export const form = ambil("#form-latihan");
-export const inputJenis = ambil("#jenis-olahraga");
-export const inputTanggal = ambil("#tanggal-latihan");
-export const inputDurasi = ambil("#durasi");
+const kolomForm = {
+  jenis: ambil("#jenis-olahraga"),
+  tanggal: ambil("#tanggal-latihan"),
+  durasi: ambil("#durasi"),
+};
 const tombolSimpan = ambil("#tombol-simpan");
 const statusForm = ambil("#status-form");
 
@@ -86,62 +89,94 @@ export function gambarProfil(profil, daftarLatihan) {
   ambil("#kaki").textContent = `${profil.nama} · ${profil.nim} · ${profil.tahun}`;
 }
 
-// ---------- Daftar target ----------
+// ---------- render(state): satu-satunya jalan tampilan berubah ----------
 
-export function render(daftar) {
-  wadah.textContent = ""; // 1. kosongkan lebih dulu
+export function render(state) {
+  gambarFilter(state.kategoriAktif);
+  gambarDaftar(state);
+  gambarForm(state.form);
+  gambarReferensi(state.referensi);
+}
 
-  if (daftar.length === 0) { // 2. periksa keadaan kosong
+function gambarFilter(kategoriAktif) {
+  barisFilter.querySelectorAll("button").forEach((tombol) => {
+    const aktif = tombol.dataset.kategori === kategoriAktif; // kelas .aktif hanya hasil gambar, tidak pernah dibaca
+    tombol.classList.toggle("aktif", aktif);
+    tombol.setAttribute("aria-pressed", String(aktif));
+  });
+}
+
+// pengganti penyaring di pendengar klik P9: kategori dibaca dari state, bukan dari dataset tombol
+function saring(state) {
+  return state.daftarProyek.filter(
+    (proyek) => state.kategoriAktif === "semua" || proyek.kategori === state.kategoriAktif
+  );
+}
+
+function gambarDaftar(state) {
+  wadah.textContent = ""; // 1. kosongkan
+
+  const tampil = saring(state); // dari state, bukan argumen
+  if (tampil.length === 0) { // 2. keadaan kosong
     kosong.hidden = false;
     return;
   }
   kosong.hidden = true;
 
   const fragmen = document.createDocumentFragment(); // halaman digambar sekali
-  daftar.forEach((proyek) => fragmen.append(buatKartu(proyek))); // 3. isi ulang
+  tampil.forEach((proyek) => fragmen.append(buatKartu(proyek))); // 3. isi ulang
   wadah.append(fragmen);
 }
 
-export function tandaiTombolAktif(tombolAktif) {
-  barisFilter.querySelectorAll("button").forEach((tombol) => {
-    tombol.classList.toggle("aktif", tombol === tombolAktif);
-    tombol.setAttribute("aria-pressed", String(tombol === tombolAktif));
+// ---------- Form: isian, tanda galat per kolom, tombol, pesan ----------
+
+function gambarForm({ nilai, sudahDikirim, kolomDisentuh, pesan }) {
+  let semuaSah = true;
+
+  Object.entries(kolomForm).forEach(([kunci, kolom]) => {
+    // hanya ditulis bila berbeda, supaya kursor tidak melompat saat mengetik
+    if (kolom.value !== nilai[kunci]) kolom.value = nilai[kunci];
+
+    const sah = aturanForm[kunci](nilai[kunci]);
+    const tampilkanGalat = (sudahDikirim || kolomDisentuh.includes(kunci)) && !sah;
+    if (tampilkanGalat) kolom.setAttribute("aria-invalid", "true");
+    else kolom.removeAttribute("aria-invalid");
+    document.getElementById(kolom.getAttribute("aria-describedby")).hidden = !tampilkanGalat;
+
+    semuaSah &&= sah;
   });
+
+  // tombol nonaktif hanya setelah pengguna mulai mengisi atau menekan Simpan
+  tombolSimpan.disabled = (sudahDikirim || kolomDisentuh.length > 0) && !semuaSah;
+  statusForm.textContent = pesan;
 }
 
-// ---------- Form: tanda galat per kolom ----------
-
-export function tandaiKolom(kolom, tampilkanGalat) {
-  const galat = document.getElementById(kolom.getAttribute("aria-describedby"));
-  if (tampilkanGalat) kolom.setAttribute("aria-invalid", "true");
-  else kolom.removeAttribute("aria-invalid");
-  galat.hidden = !tampilkanGalat;
-}
-
-export function aturTombolSimpan(nonaktif) {
-  tombolSimpan.disabled = nonaktif;
-}
-
-export function tulisStatusForm(teks) {
-  statusForm.textContent = teks;
-}
-
-export function fokusKolomGalat() {
-  form.querySelector('[aria-invalid="true"]')?.focus(); // pindah ke kolom pertama yang perlu diperbaiki
+// pindah ke kolom pertama yang perlu diperbaiki; dihitung dari state, bukan dari aria-invalid
+export function fokusKolomGalat({ nilai }) {
+  const kunci = Object.keys(kolomForm).find((k) => !aturanForm[k](nilai[k]));
+  if (kunci) kolomForm[kunci].focus();
 }
 
 // ---------- Referensi latihan dari jaringan (P10) ----------
 
 // keadaan memuat/gagal/kosong ditulis di satu paragraf; data-keadaan dipakai CSS
-export function tampilkanStatus(keadaan, teks) {
+function tampilkanStatus(keadaan, teks) {
   statusLatihan.dataset.keadaan = keadaan;
   statusLatihan.textContent = teks;
   statusLatihan.hidden = false;
 }
 
-export function gambarLatihan(daftar) {
-  wadahLatihan.textContent = ""; // kartu tidak berlipat saat dimuat ulang
+function gambarReferensi({ keadaan, daftar, pesan }) {
+  wadahLatihan.textContent = ""; // kartu tidak berlipat saat digambar ulang
 
+  if (keadaan === "memuat") {
+    tampilkanStatus("memuat", "Memuat referensi latihan…");
+    return;
+  }
+  if (keadaan === "gagal") {
+    tampilkanStatus("gagal", `Gagal memuat data: ${pesan}. Periksa koneksi, lalu muat ulang halaman.`);
+    return;
+  }
   if (daftar.length === 0) {
     tampilkanStatus("kosong", "Belum ada referensi latihan dari peladen untuk kategori ini.");
     return;
