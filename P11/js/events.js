@@ -4,16 +4,20 @@
 // menyerahkannya ke fungsi pengubah di state.js. Tidak ada state.x = ... di sini.
 // =============================================================
 
-import { state, pilihKategori, ubahKolom, sentuhKolom, kirimForm } from "./state.js";
-import { barisFilter, form, fokusKolomGalat } from "./dom.js";
+import { state, pilihKategori, pilihTema, aturUlangPilihan, ubahKolom, sentuhKolom, kirimForm } from "./state.js";
+import { kotakTema, barisFilter, tombolAturUlang, form, fokusKolomGalat } from "./dom.js";
 
 export function pasangPendengar() {
+  kotakTema.addEventListener("change", (event) => pilihTema(event.target.checked));
+
   // satu pendengar di induk untuk semua tombol filter
   barisFilter.addEventListener("click", (event) => {
     const tombol = event.target.closest("button");
     if (!tombol) return; // klik di sela tombol, abaikan
     pilihKategori(tombol.dataset.kategori);
   });
+
+  tombolAturUlang.addEventListener("click", aturUlangPilihan);
 
   // satu pendengar di form untuk ketiga kolom; kolom dikenali dari data-kolom
   form.addEventListener("input", (event) => {

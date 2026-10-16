@@ -7,11 +7,18 @@
 import { daftarProyek, formatTanggal, formSah } from "./data.js";
 import { simpanCatatan } from "./api.js";
 import { render } from "./dom.js";
+import { simpan, muat, aturUlang } from "./simpanan.js";
+
+// nilai bawaan pada kunjungan pertama, atau setelah simpanan dibuang
+const BAWAAN = { kategoriAktif: "semua", temaDibalik: false };
 
 const formKosong = () => ({ jenis: "", tanggal: "", durasi: "" });
 
+const tersimpan = muat(); // null pada kunjungan pertama: diganti nilai bawaan lewat ??
+
 export const state = {
-  kategoriAktif: "semua",
+  kategoriAktif: tersimpan?.kategoriAktif ?? BAWAAN.kategoriAktif,
+  temaDibalik: tersimpan?.temaDibalik ?? BAWAAN.temaDibalik, // true = kebalikan tema sistem (#tema dicentang)
   daftarProyek,
   form: {
     nilai: formKosong(),  // isi ketiga kolom, diperbarui tiap ketikan
@@ -26,6 +33,21 @@ export const state = {
 
 export function pilihKategori(nilai) {
   state.kategoriAktif = nilai;
+  simpan(state); // sesudah keadaan berubah, sebelum render
+  render(state);
+}
+
+// ---------- Tema dan atur ulang ----------
+
+export function pilihTema(dibalik) {
+  state.temaDibalik = dibalik;
+  simpan(state);
+  render(state);
+}
+
+export function aturUlangPilihan() {
+  aturUlang(); // simpanan benar-benar dihapus, bukan hanya tampilannya
+  Object.assign(state, BAWAAN);
   render(state);
 }
 

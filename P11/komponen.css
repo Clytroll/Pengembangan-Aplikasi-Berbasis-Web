@@ -211,6 +211,15 @@ button:disabled {
   outline-color: var(--color-primary); /* currentColor gelap hilang di tema gelap */
 }
 
+/* P11: tombol atur ulang pilihan tersimpan, tampil sekunder di bawah filter */
+.tombol-atur-ulang {
+  margin-block-end: var(--space-4);
+  background: transparent;
+  color: var(--color-fg);
+  border: 1px dashed var(--color-border);
+  font-size: var(--text-sm);
+}
+
 .pesan-kosong {
   padding: var(--card-pad);
   border: 1px dashed var(--color-border);

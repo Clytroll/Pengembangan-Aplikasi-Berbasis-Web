@@ -18,7 +18,9 @@ function ambil(selektor) {
 const wadah = ambil("#daftar");
 const kosong = ambil("#pesan-kosong");
 
+export const kotakTema = ambil("#tema");
 export const barisFilter = ambil("#filter");
+export const tombolAturUlang = ambil("#atur-ulang");
 export const form = ambil("#form-latihan");
 const kolomForm = {
   jenis: ambil("#jenis-olahraga"),
@@ -92,6 +94,7 @@ export function gambarProfil(profil, daftarLatihan) {
 // ---------- render(state): satu-satunya jalan tampilan berubah ----------
 
 export function render(state) {
+  kotakTema.checked = state.temaDibalik; // tema.css membaca :checked, jadi cukup centangnya yang digambar
   gambarFilter(state.kategoriAktif);
   gambarDaftar(state);
   gambarForm(state.form);
