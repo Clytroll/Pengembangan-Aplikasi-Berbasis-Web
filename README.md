@@ -154,3 +154,42 @@ lokal.
 Dibantu AI (Claude Code): penyusunan `js/api.js`, penambahan bagian
 pengambilan data dan penyimpanan catatan di `js/dom.js`, penyesuaian
 `profil.html` dan `komponen.css` untuk P10, serta bagian README ini.
+
+## Pertemuan 11 — Modul, state, dan penyimpanan klien
+
+Berkas di folder `P11/`: salinan halaman Pertemuan 10. JavaScript-nya dipecah
+menjadi lima modul wajib, ditambah `js/api.js` dari P10 (tidak diubah) dan
+`js/simpanan.js`. `profil.html` kini hanya memanggil satu skrip,
+`<script type="module" src="js/app.js">`. Halaman tetap dibuka lewat server
+lokal dengan port yang tetap.
+
+| Berkas | Tanggung jawab |
+|---|---|
+| `js/data.js` | data mentah (`profil`, `daftarLatihan`, `daftarProyek`, `KATEGORI`) dan fungsi murni (`buatPerkenalan`, `formatKeahlian`, `formatTanggal`, aturan form) |
+| `js/state.js` | objek `state` tunggal dan fungsi pengubahnya (`pilihKategori`, `pilihTema`, `aturUlangPilihan`, `ubahKolom`, `sentuhKolom`, `kirimForm`, `terimaReferensi`, `gagalReferensi`) |
+| `js/dom.js` | seluruh sentuhan ke halaman: pemilih, `render(state)`, `saring(state)`, kelas |
+| `js/events.js` | `pasangPendengar()`: semua `addEventListener` |
+| `js/app.js` | perakit: hanya `import` dan pemanggilan |
+| `js/simpanan.js` | `simpan`, `muat`, `aturUlang` untuk localStorage |
+| `js/api.js` | dari P10: `fetch` ke wger.de dan catatan form |
+
+- Kategori aktif, isian form, dan status referensi berada di `state`. Kelas
+  `.aktif`, `aria-invalid`, dan isi kolom hanya hasil gambar `render(state)`,
+  tidak pernah dibaca kembali.
+- Setiap fungsi pengubah mengubah `state`, menyimpan bila perlu, lalu
+  memanggil `render(state)`.
+- Yang disimpan (kunci `pabw-p11`, versi 1): kategori aktif dan pilihan tema.
+  Nilai bawaannya `"semua"` dan tema ikut sistem. Tombol "Atur ulang pilihan"
+  menghapus simpanan.
+- Simpanan yang bukan JSON, versinya berbeda, atau isinya tidak dikenal
+  dibuang, lalu halaman memakai nilai bawaan.
+- Sengaja tidak disimpan: token dan kata sandi, data pribadi, isian form yang
+  belum dikirim, dan data referensi dari jaringan.
+
+Node.js LTS untuk Pertemuan 12: `node -v` → v22.15.0, `npm -v` → 10.9.2.
+
+### Deklarasi AI
+
+Dibantu AI (Claude Code): pemecahan `js/` menjadi modul, `state.js`,
+`simpanan.js`, penyesuaian `profil.html` dan `komponen.css` untuk P11, serta
+bagian README ini.
