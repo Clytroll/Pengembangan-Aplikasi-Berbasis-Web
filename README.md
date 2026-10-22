@@ -193,3 +193,43 @@ Node.js LTS untuk Pertemuan 12: `node -v` → v22.15.0, `npm -v` → 10.9.2.
 Dibantu AI (Claude Code): pemecahan `js/` menjadi modul, `state.js`,
 `simpanan.js`, penyesuaian `profil.html` dan `komponen.css` untuk P11, serta
 bagian README ini.
+
+## Pertemuan 12 — Build tooling, npm, dan framework SPA
+
+Proyek Vue + Vite di folder `P12/worksheet-p12/`, dibuat dari folder kosong
+dengan `npm create vite@latest . -- --template vue`. Isi dan perilakunya sama
+dengan halaman Pertemuan 11.
+
+- Perkakas: `node -v` → v22.15.0 (LTS), `npm -v` → 10.9.2. Vue 3.5, Vite 8.3.
+- Port `npm run dev`: 5173. Port `npm run preview`: 4173.
+- `index.html` hanya berisi `<div id="app" class="page">` dan satu `<script>`.
+  Enam berkas CSS P04–P06 ada di `src/` tanpa perubahan dan diimpor di
+  `src/main.js` dengan urutan yang sama seperti P11. `class="page"` pindah dari
+  `<body>` ke `#app` supaya grid kepala–isi–kaki tetap berlaku.
+- `src/api.js` (P10) dan `src/simpanan.js` (P11) disalin tanpa perubahan.
+  `src/data.js` hanya ditambahi `id` pada setiap target. Gambar ada di
+  `src/assets/`.
+
+| Komponen | Bagian halaman | Data |
+|---|---|---|
+| `KepalaProfil.vue` | kepala halaman (judul, navigasi, identitas, tombol tema) | props `profil` dari `App.vue` |
+| `TombolFilter.vue` | tombol kategori | state bersama |
+| `DaftarProyek.vue` | kartu target dan penyaringannya | state bersama |
+| `FormKontak.vue` | form Catat Latihan | `ref` lokal |
+
+- `src/state.js`: objek state P11 dibungkus `reactive()`. `render(state)`
+  sudah tidak ada.
+- `App.vue`: `onMounted` membaca simpanan (kunci `pabw-p11`) dan memanggil
+  `ambilLatihan()`, `watch` menyimpan kategori dan tema setiap kali berubah,
+  dan tombol "Atur ulang pilihan" menulis ulang nilai bawaan.
+- Ukuran (tab Network, tanpa cache): `npm run dev` mengirim 22 berkas
+  (±1.657 kB). Hasil build lewat `npm run preview` mengirim 4 berkas
+  (162 kB, 111 kB setelah gzip).
+- `node_modules/` dan `dist/` diabaikan lewat `.gitignore`.
+  `package-lock.json` ikut di-commit.
+
+### Deklarasi AI
+
+Dibantu AI (Claude Code): pembuatan proyek Vite, pemindahan halaman P11 ke
+`App.vue` dan empat komponen, `state.js`, penyambungan simpanan di `App.vue`,
+`.gitignore`, serta bagian README ini.
