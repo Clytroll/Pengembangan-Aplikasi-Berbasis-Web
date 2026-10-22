@@ -1,13 +1,16 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>worksheet-p12</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Olahraga Arif</title>
+  <link rel="icon" href="data:,"> <!-- tanpa ini Console menampilkan 404 favicon.ico -->
+</head>
+<body>
+  <!-- P12: CSS diimpor di src/main.js, isi halaman ada di App.vue dan src/components/.
+       class="page" pindah dari <body> ke wadah #app: kepala, isi, dan kaki halaman
+       kini anak #app, jadi grid tiga baris di layout.css dipasang di sini. -->
+  <div id="app" class="page"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
 </html>

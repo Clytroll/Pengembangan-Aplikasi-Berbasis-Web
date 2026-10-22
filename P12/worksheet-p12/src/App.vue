@@ -1,7 +1,9 @@
+<!-- src/App.vue — isi sementara, disusun penuh di lembar D -->
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { profil } from './data.js'
 </script>
 
 <template>
-  <HelloWorld />
+  <h1>Jadwal Olahraga {{ profil.panggilan }}</h1>
+  <p>Bagian halaman dipindahkan di lembar D.</p>
 </template>
