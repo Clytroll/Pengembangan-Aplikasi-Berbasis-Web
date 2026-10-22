@@ -4,10 +4,11 @@
      (ringkasan, jadwal, referensi, kaki). Isi dan kelas sama dengan profil.html P11.
      ============================================================= -->
 <script setup>
-import { computed, onMounted } from 'vue'
-import { profil, daftarLatihan, hitungTotal, formatAngka } from './data.js'
+import { computed, onMounted, watch } from 'vue'
+import { profil, daftarLatihan, KATEGORI, hitungTotal, formatAngka } from './data.js'
 import { state, BAWAAN, terimaReferensi, gagalReferensi } from './state.js'
 import { ambilLatihan } from './api.js' // dari P10, tidak diubah
+import { muat, simpan, aturUlang } from './simpanan.js' // dari P11, tidak diubah
 
 // tanpa empat baris impor ini Vue hanya memberi peringatan
 // "Failed to resolve component" dan halaman tampil kosong
@@ -33,12 +34,24 @@ const statusReferensi = computed(() => {
   return null
 })
 
+// simpanan dibaca satu kali, saat komponen pertama dipasang
 onMounted(() => {
+  const isi = muat() // VERSI diperiksa di dalam muat(); bentuk lama dibuang
+  // versi cocok belum tentu isinya benar: nilai yang tidak dikenal tidak dipakai
+  if (KATEGORI.includes(isi?.kategoriAktif)) state.kategoriAktif = isi.kategoriAktif
+  if (typeof isi?.temaDibalik === 'boolean') state.temaDibalik = isi.temaDibalik
+
   ambilLatihan().then(terimaReferensi, gagalReferensi)
 })
 
-function aturUlangPilihan() {
-  Object.assign(state, BAWAAN)
+// simpanan ditulis setiap kali pilihan berubah; hanya dua nilai yang disimpan
+// diawasi, jadi data referensi dari jaringan tidak memicu penulisan
+watch(() => [state.kategoriAktif, state.temaDibalik], () => simpan(state))
+
+function aturUlangPilihan() { // tombol atur ulang dari P11 lembar D.2
+  aturUlang()                   // simpanan lama benar-benar dihapus
+  Object.assign(state, BAWAAN)  // kategori "semua", tema ikut sistem
+  simpan(state)                 // lalu ditulis ulang berisi nilai bawaan
 }
 </script>
 

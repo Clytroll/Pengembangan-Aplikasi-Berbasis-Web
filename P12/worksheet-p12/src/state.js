@@ -1,6 +1,6 @@
 // =============================================================
 // P12 — state.js: objek state P11 yang dibungkus reactive()
-// Fungsi pengubah hanya mengubah state. Tidak ada render(state):
+// Fungsi pengubah hanya mengubah state. Tidak ada pemanggilan gambar ulang manual:
 // Vue menggambar ulang bagian template yang membaca nilai yang berubah.
 // Isian form tidak lagi di sini: ia ref lokal di FormKontak.vue.
 // =============================================================
@@ -21,7 +21,7 @@ export const state = reactive({
 // ---------- Target dan filter ----------
 
 export function pilihKategori(nilai) {
-  state.kategoriAktif = nilai // tanpa render()
+  state.kategoriAktif = nilai // tanpa menggambar ulang sendiri
 }
 
 // ---------- Tema ----------
