@@ -23,12 +23,15 @@ export const daftarLatihan = [
 ];
 
 // nilai data-kategori tombol filter di profil.html; dipakai untuk memeriksa isi simpanan
+// (P12: tombolnya digambar TombolFilter.vue dari daftar ini)
 export const KATEGORI = ["semua", "kardio", "kekuatan", "kebiasaan", "fleksibilitas"];
 
 // "proyek" di halaman ini adalah target olahraga
+// P12: setiap butir diberi id unik untuk :key pada v-for di DaftarProyek.vue
 // kategori harus sama huruf per huruf dengan data-kategori tombol filter di profil.html
 export const daftarProyek = [
   {
+    id: 1,
     judul: "Lari 5 km tanpa berhenti",
     kategori: "kardio",
     keterangan: "Target utama semester ini. Jarak dinaikkan bertahap supaya lutut tidak cedera.",
@@ -38,18 +41,21 @@ export const daftarProyek = [
     utama: true,
   },
   {
+    id: 2,
     judul: "Rutin 4 kali seminggu",
     kategori: "kebiasaan",
     keterangan: "Berolahraga minimal 4 kali seminggu, masing-masing minimal 30 menit.",
     status: "Berjalan",
   },
   {
+    id: 3,
     judul: "Bakar 1.150 kkal per minggu",
     kategori: "kebiasaan",
     keterangan: "Membakar sekitar 1.150 kkal per minggu dari latihan terjadwal.",
     status: "Berjalan",
   },
   {
+    id: 4,
     judul: "Plank 2 menit",
     kategori: "kekuatan",
     keterangan: "Naik dari 60 detik sekarang, tambah 10 detik tiap minggu.",
@@ -57,6 +63,7 @@ export const daftarProyek = [
     tenggat: "2026-11-30",
   },
   {
+    id: 5,
     judul: "Bersepeda 20 km sekali jalan",
     kategori: "kardio",
     keterangan: "Rute kampus–rumah pulang-pergi setiap Jumat.",
